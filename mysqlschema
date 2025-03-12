@@ -1,1 +1,32 @@
+use librarydb;
+show tables;
+CREATE TABLE books (
+    book_id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    author VARCHAR(100) NOT NULL,
+    genre VARCHAR(50) NOT NULL,
+    available INT NOT NULL DEFAULT 1  -- Stores the number of available copies
+);
 
+CREATE TABLE members (
+    member_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    contact VARCHAR(20) NOT NULL
+);
+
+CREATE TABLE book_issuance (
+    issue_id INT AUTO_INCREMENT PRIMARY KEY,
+    member_id INT,
+    book_id INT,
+    issue_date DATE DEFAULT (CURRENT_DATE),
+    return_date DATE GENERATED ALWAYS AS (DATE_ADD(issue_date, INTERVAL 7 DAY)) STORED,
+    FOREIGN KEY (member_id) REFERENCES members(member_id) ON DELETE CASCADE,
+    FOREIGN KEY (book_id) REFERENCES books(book_id) ON DELETE CASCADE
+);
+ALTER TABLE book_issuance ADD COLUMN is_returned BOOLEAN DEFAULT FALSE;
+
+show tables;
+desc books;
+desc borrowedbooks;
+desc members;
+ALTER TABLE books MODIFY available INT;
